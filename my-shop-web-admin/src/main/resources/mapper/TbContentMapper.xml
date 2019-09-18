@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yichen.my.shop.web.admin.dao.TbContentDao">
+
+
+    <sql id="tbContentColumns">
+            a.id,
+            a.category_id as categoryId,
+            a.title ,
+            a.sub_title as subTitle,
+            a.title_desc as titleDesc,
+            a.url ,
+            a.pic ,
+            a.pic2,
+            a.content ,
+            a.created ,
+            a.updated
+    </sql>
+
+    <select id="selectAll" resultType="TbContent">
+        SELECT
+        <include refid="tbContentColumns"/>
+        FROM
+        tb_content AS a
+    </select>
+
+    <insert id="insert">
+
+                insert into `tb_content`
+                    (
+                    `category_id`,
+                    `title`,
+                    `sub_title`,
+                    `title_desc`,
+                    `url`,
+                    `pic`,
+                    `pic2`,
+                    `content`,
+                    `created`,
+                    `updated`
+                    )
+                    values
+                    (
+                    #{categoryId},
+                    #{title},
+                    #{subTitle},
+                    #{titleDesc},
+                    #{url},
+                    #{pic},
+                    #{pic2},
+                    #{content},
+                    #{created},
+                    #{updated}
+                    );
+    </insert>
+
+    <delete id="delete">
+        delete from tb_content where id = #{id}
+    </delete>
+
+    <select id="getById" resultType="TbContent">
+        SELECT
+        <include refid="tbContentColumns"/>
+        FROM
+        tb_content AS a  where a.id = #{id}
+    </select>
+
+    <update id="update" >
+
+            UPDATE `tb_content`
+                SET
+                `category_id` = #{categoryId},
+                `title` = #{title},
+                `sub_title` = #{subTitle},
+                `title_desc` = #{titleDesc},
+                `url` = #{url},
+                `pic` = #{pic},
+                `pic2` = #{pic2},
+                `content` = #{content},
+                `created` = #{created},
+                `updated` = #{updated}
+                WHERE
+                `id` = #{id} ;
+
+
+    </update>
+
+    <delete id="deleteMulti">
+        delete from tb_content
+        where id in
+        <foreach collection="array" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="page" resultType="TbContent" parameterType="java.util.Map">
+        select
+        <include refid="tbContentColumns"/>
+        from tb_content as a
+        <where>
+            <if test="tbContent.title != null and tbContent.title != ''">
+                and a.title like concat ('%', #{tbContent.title}, '%')
+            </if>
+            <if test="tbContent.subTitle != null and tbContent.subTitle != ''">
+                and a.sub_title like concat ('%', #{tbContent.subTitle}, '%')
+            </if>
+            <if test="tbContent.titleDesc != null and tbContent.titleDesc != ''">
+                and a.title_desc like concat ('%', #{tbContent.titleDesc}, '%')
+            </if>
+        </where>
+        limit #{start}, #{length}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from tb_content
+        <where>
+            <if test="title != null and title != ''">
+                and title like concat ('%', #{title}, '%')
+            </if>
+            <if test="subTitle != null and subTitle != ''">
+                and sub_title like concat ('%', #{subTitle}, '%')
+            </if>
+            <if test="titleDesc != null and tbContent.titleDesc != ''">
+                and title_desc like concat ('%', #{titleDesc}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>
