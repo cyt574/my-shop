@@ -17,5 +17,9 @@
     <!--<bean id="userDao" class="com.yichen.my.shop.dao.Impl.UserDaoImpl"></bean>-->
 
     <!--<bean id="userService" class="com.yichen.my.shop.service.serviceImpl.UserServiceImpl"></bean>-->
-
+    <!-- 配置 Bean Validator 定义 -->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+    <bean id="beanValidator" class="com.yichen.my.shop.commons.validator.BeanValidator">
+        <property name="validator" ref="validator" />
+    </bean>
 </beans>

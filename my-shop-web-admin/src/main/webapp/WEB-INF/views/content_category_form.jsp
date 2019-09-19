@@ -9,12 +9,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sys" tagdir="/WEB-INF/tags/sys" %>
 <!DOCTYPE html>
 <html>
 <head>
 
     <title>我的商城 | 新增分类</title>
     <jsp:include page="../includes/header.jsp"/>
+    <link rel="stylesheet" href="/static/assets/plugins/jquery-ztree/css/zTreeStyle/zTreeStyle.min.css"/>
+</head>
 
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -37,12 +40,10 @@
         <!-- Main content -->
         <section class="content">
             <c:if test="${baseResult!=null}">
-                <div class="alert alert-${baseResult.status == 200?"success":"danger"} alert-dismissible">
+                <div class="alert alert-${baseResult.status == 200 ? "success" : "danger"} alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h4><i class="icon fa fa-warning"></i> 警告!</h4>
                         ${baseResult.message}
                 </div>
-
             </c:if>
 
 
@@ -53,42 +54,37 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <form:form cssClass="form-horizontal" action="/content/category/save" method="POST" modelAttribute="tbContentCategory" id="inputForm">
-                    <form:hidden path="id"/>
+                <form:form cssClass="form-horizontal" action="/content/category/save" method="POST"
+                           modelAttribute="tbContentCategory" id="inputForm">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="email" class="col-sm-2 control-label">邮箱</label>
-
+                            <label for="parentName" class="col-sm-2 control-label">父级品类</label>
                             <div class="col-sm-10">
-                                <form:input path="email" cssClass="form-control required email" placeholder="请输入邮箱"/>
+                                <form:hidden path="id"/>
+                                <form:hidden id="parentId" path="parent.id"/>
+                                <input id="parentName" class="form-control" placeholder="请输入品类" readonly="true"
+                                       data-toggle="modal" data-target="#modal-default"  value="${tbContentCategory.parent.name}"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="password" class="col-sm-2 control-label">密码</label>
-
+                            <label for="name" class="col-sm-2 control-label">分类名称</label>
                             <div class="col-sm-10">
-                                <form:password path="password" cssClass="form-control required" placeholder="请输入登录密码"/>
+                                <form:input path="name" cssClass="form-control required" placeholder="请输入分类名称"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="username" class="col-sm-2 control-label">用户名</label>
+                            <label for="sortOrder" class="col-sm-2 control-label">分类排序</label>
                             <div class="col-sm-10">
-                                <form:input path="username" cssClass="form-control required" placeholder="请输入用户名"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone" class="col-sm-2 control-label">手机号</label>
-
-                            <div class="col-sm-10">
-                                <form:input path="phone" cssClass="form-control required mobile"  placeholder="请输入手机号"/>
+                                <form:input path="sortOrder" cssClass="form-control required digits"
+                                            placeholder="请输入分类排序"/>
                             </div>
                         </div>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        <button type="button" class="btn btn-default" onclick="history.go(-1)">返回</button>
-                        <button type="submit" class="btn btn-info pull-right">提交</button>
-                    </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer">
+                            <button type="button" class="btn btn-default" onclick="history.go(-1)">返回</button>
+                            <button type="submit" class="btn btn-info pull-right">提交</button>
+                        </div>
                 </form:form>
             </div>
         </section>
@@ -99,5 +95,17 @@
     <jsp:include page="../includes/copyright.jsp"/>
 </div>
 <jsp:include page="../includes/footer.jsp"/>
+<script src="/static/assets/plugins/jquery-ztree/js/jquery.ztree.core-3.5.min.js"></script>
+
+<sys:modal title="请选择" msg=" <ul id='myTree' class='ztree'>  </ul> "/>
+<script>
+    $(function () {
+        App.initZTree("/content/category/tree", ["id"], function (nodes) {
+            var node = nodes[0];
+            $("#parentId").val(node.id);
+            $("#parentName").val(node.name);
+        })
+    });
+</script>
 </body>
 </html>

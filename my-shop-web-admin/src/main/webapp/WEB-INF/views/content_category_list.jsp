@@ -16,7 +16,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 <%@ taglib prefix="sys" tagdir="/WEB-INF/tags/sys" %>
 <!DOCTYPE html>
 <html>
@@ -61,7 +60,7 @@
                     <h3 class="box-title">分类列表</h3>
                 </div>
                 <div class="box-body">
-                    <a href="/user/form" type="button" class="btn btn-sm btn-default"><i class="fa fa-plus"></i>新增</a>&nbsp;&nbsp;&nbsp;
+                    <a href="/content/category/form" type="button" class="btn btn-sm btn-default"><i class="fa fa-plus"></i>新增</a>&nbsp;&nbsp;&nbsp;
                     <a type="button" class="btn btn-sm btn-default"><i class="fa fa-upload"></i>导入</a>&nbsp;&nbsp;&nbsp;
                     <a type="button" class="btn btn-sm btn-default"><i class="fa fa-download"></i>导出</a>&nbsp;&nbsp;&nbsp;
                 </div>
@@ -78,13 +77,13 @@
                         </thead>
                         <tbody>
                             <c:forEach items="${tbContentCategories}" var="tbContentCategory">
-                                <tr id="${tbContentCategory.id}" pId="${tbContentCategory.parentId}">
+                                <tr id="${tbContentCategory.id}" pId="${tbContentCategory.parent.id}">
                                     <td>${tbContentCategory.id}</td>
                                     <td>${tbContentCategory.name}</td>
                                     <td>${tbContentCategory.sortOrder}</td>
-                                    <td> <a href="#" type="button" class="btn btn-sm btn-primary"><i class="fa fa-search"></i>编辑</a>&nbsp;&nbsp;&nbsp;
+                                    <td> <a href="/content/category/form?id=${tbContentCategory.id}" type="button" class="btn btn-sm btn-primary"><i class="fa fa-search"></i>编辑</a>&nbsp;&nbsp;&nbsp;
                                         <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-edit">删除</i></button>&nbsp;&nbsp;&nbsp;
-                                        <a href="#" type="button" class="btn btn-sm btn-default" onclick="check()"><i class="fa fa-trash"></i>新增下级菜单</a>&nbsp;&nbsp;&nbsp;</td>
+                                        <a href="/content/category/form?parent.id=${tbContentCategory.id}&parent.name=${tbContentCategory.name}" type="button" class="btn btn-sm btn-default" onclick="check()"><i class="fa fa-trash"></i>新增下级菜单</a>&nbsp;&nbsp;&nbsp;</td>
                                 </tr>
                             </c:forEach>
                         </tbody>

@@ -16,7 +16,11 @@
 
     <title>我的商城 | 内容表单</title>
     <jsp:include page="../includes/header.jsp"/>
-    <link rel="stylesheet" href="/static/assets/plugins/jquery-ztree/css/zTreeStyle/zTreeStyle.min.css" /></head>
+    <link rel="stylesheet" href="/static/assets/plugins/jquery-ztree/css/zTreeStyle/zTreeStyle.min.css"/>
+    <link rel="stylesheet" href="/static/assets/plugins/dropzone/min/dropzone.min.css"/>
+    <link rel="stylesheet" href="/static/assets/plugins/dropzone/min/basic.min.css"/>
+    <link rel="stylesheet" href="/static/assets/plugins/wangEditor/wangEditor.min.css"/>
+</head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <jsp:include page="../includes/nav.jsp"/>
@@ -53,14 +57,17 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <form:form cssClass="form-horizontal" action="/content/save" method="POST" modelAttribute="tbContent" id="contentInputForm">
+                <form:form cssClass="form-horizontal" action="/content/save" method="POST" modelAttribute="tbContent"
+                           id="InputForm">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="categoryId" class="col-sm-2 control-label">父级品类</label>
+                            <label for="tbContentCategory.id" class="col-sm-2 control-label">父级品类</label>
 
                             <div class="col-sm-10">
-                                <form:hidden path="categoryId"/>
-                                <input id="categoryName" Class="form-control required" placeholder="请输入品类" readonly="true" data-toggle="modal" data-target="#modal-default"/>
+                                <form:hidden path="id"/>
+                                <form:hidden id="categoryId" path="tbContentCategory.id"/>
+                                <input id="categoryName" Class="form-control required" placeholder="请输入品类"
+                                       readonly="true" data-toggle="modal" data-target="#modal-default" value="${tbContent.tbContentCategory.name}"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -91,25 +98,35 @@
                             <label for="pic" class="col-sm-2 control-label">图片一</label>
                             <div class="col-sm-10">
                                 <form:input path="pic" cssClass="form-control required" placeholder="请输入图片一"/>
+                                <div id="dropz" class="dropzone" style="border: 3px dashed #00c0ef; border-radius: 5px">
+
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="pic2" class="col-sm-2 control-label">图片二</label>
                             <div class="col-sm-10">
                                 <form:input path="pic2" cssClass="form-control required" placeholder="请输入图片二"/>
+                                <div id="dropz2" class="dropzone"
+                                     style="border: 3px dashed #00c0ef; border-radius: 5px">
+
+                                </div>
                             </div>
+
                         </div>
                         <div class="form-group">
                             <label for="content" class="col-sm-2 control-label">详情</label>
                             <div class="col-sm-10">
-                                <form:textarea path="content" cssClass="form-control required" placeholder="请输入详情" cssStyle="min-height: 200px"/>
+                                <form:hidden path="content"/>
+                                <div id="editor" placeholder="请输入详情">${tbContent.content}</div>
+                                    <%--<form:textarea path="content" cssClass="form-control required" placeholder="请输入详情" cssStyle="min-height: 200px"/>--%>
                             </div>
                         </div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <button type="button" class="btn btn-default" onclick="history.go(-1)">返回</button>
-                        <button type="submit" class="btn btn-info pull-right">提交</button>
+                        <button type="submit" class="btn btn-info pull-right" id="btn-submit">提交</button>
                     </div>
                 </form:form>
             </div>
@@ -122,16 +139,60 @@
 </div>
 <jsp:include page="../includes/footer.jsp"/>
 <script src="/static/assets/plugins/jquery-ztree/js/jquery.ztree.core-3.5.min.js"></script>
+<script src="/static/assets/plugins/dropzone/min/dropzone.min.js">
+
+</script>
+<script src="/static/assets/plugins/wangEditor/wangEditor.min.js"></script>
+
 <sys:modal title="请选择" msg=" <ul id='myTree' class='ztree'>  </ul> "/>
 <script>
     $(function () {
+        initWangEditor();
         App.initZTree("/content/category/tree", ["id"], function (nodes) {
             var node = nodes[0];
             $("#categoryId").val(node.id);
             $("#categoryName").val(node.name);
-            $("#mod")
         })
     });
+
+    function initWangEditor() {
+        var E = window.wangEditor;
+        var editor = new E('#editor');
+        editor.customConfig.uploadFileName = "editorFile"
+        editor.customConfig.uploadImgServer = "/upload";
+
+        editor.create();
+
+        $("#btn-submit").bind("click", function () {
+            var contentHtml = editor.txt.html();
+            $("#content").val(contentHtml);
+        })
+    }
+
+
+
+    App.initDropZone({
+        url: '/upload',
+        id: "#dropz",
+        paramName: "dropzFile",
+        init: function () {
+            this.on("success", function (file, data) {
+                $("#pic").val(data.fileName);
+            });
+        }
+    });
+    App.initDropZone({
+        url: '/upload',
+        id: "#dropz2",
+        paramName: "dropzFile",
+        init: function () {
+            this.on("success", function (file, data) {
+                $("#pic2").val(data.fileName);
+            });
+        }
+    });
+
+
 </script>
 
 </body>

@@ -4,6 +4,26 @@ var App = function () {
     var masterCheckBox = null;
     var checkBox = null;
 
+    var defaultDropZoneOpts = {
+        url: '',
+        dictDefaultMessage: '拖动文件至此或者点击上传', // 设置默认的提示语句
+        paramName: "dropzFile", // 传到后台的参数名称
+        maxFiles: 1,// 一次性上传的文件数量上限
+        maxFilesize: 2, // 文件大小，单位：MB
+        acceptedFiles: ".jpg,.gif,.png,.jpeg", // 上传的类型
+        addRemoveLinks: true,
+        parallelUploads: 1,// 一次上传的文件数量
+        //previewsContainer:"#preview", // 上传图片的预览窗口
+        dictDefaultMessage: '拖动文件至此或者点击上传',
+        dictMaxFilesExceeded: "上传个文件个数达到限制！",
+        dictResponseError: '文件上传失败!',
+        dictInvalidFileType: "文件类型只能是*.jpg,*.gif,*.png,*.jpeg。",
+        dictFallbackMessage: "浏览器不受支持",
+        dictFileTooBig: "文件过大上传文件最大支持.",
+        dictRemoveLinks: "删除",
+        dictCancelUpload: "取消",
+    };
+
     /**
      * CheckBox初始化
      */
@@ -190,6 +210,14 @@ var App = function () {
             }
         })
     }
+    
+    var handlerInitDropZone = function (opts) {
+        Dropzone.autoDiscover = false;
+
+        $.extend(defaultDropZoneOpts, opts);
+        // $(""+defaultDropZoneOpts.id).dropzone(defaultDropZoneOpts);
+        new Dropzone(defaultDropZoneOpts.id, defaultDropZoneOpts);
+    } 
 
     return {
 
@@ -229,6 +257,9 @@ var App = function () {
 
         initZTree: function (url, param, callback) {
             handlerInitZTree(url, param, callback);
+        },
+        initDropZone: function (opts) {
+            handlerInitDropZone(opts);
         }
     }
 }();

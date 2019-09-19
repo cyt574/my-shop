@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @Controller
 @RequestMapping("/content")
@@ -90,7 +89,6 @@ public class ContentController {
 
 
         PageInfo<TbContent> tbContentPageInfo = tbContentService.page(start, length, draw, tbContent);
-
 
         return tbContentPageInfo;
     }
